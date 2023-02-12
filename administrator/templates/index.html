@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Home</title>
+    <link rel="stylesheet" href="{% static 'css/fontawesome-all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/search.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/nav.css' %}">
+    <link rel="stylesheet" href="{% static 'css/product.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap4.min.css' %}">
+</head>
+<body>
+
+
+<div id="colorlib-page">
+<a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle"><i></i></a>
+<aside id="colorlib-aside" role="complementary" class="js-fullheight">
+<nav id="colorlib-main-menu" role="navigation">
+<ul>
+<li class="{% if request.resolver_match.url_name == "index" %}colorlib-active{% endif %}"><a href="{% url 'index' %}">Home</a></li>
+<li class="{% if request.resolver_match.url_name == "product" %}colorlib-active{% endif %}" ><a href="{% url 'product'%}">Products</a></li>
+<li class="{% if request.resolver_match.url_name == "depts" %}colorlib-active{% endif %}"><a href="{% url 'depts'%}">Department</a></li>
+<li class="{% if request.resolver_match.url_name == "banners_view" %}colorlib-active{% endif %}"><a href="{% url 'banners_view'%}">Promo Banners</a></li>
+</ul>
+</nav>
+</aside>
+<div id="colorlib-main">
+<section class="ftco-section  mb-5 ftco-intro">
+<div class="container-fluid px-3 px-md-0">
+    {% block nav %}
+        {% include 'nav.html'%}
+    {% endblock%}
+    {% block search %}
+        {% include 'search.html' %}
+    {% endblock%}
+    {% block content %}
+    {% endblock %}
+</div>
+</section>
+</div>
+</div>
+
+<div class = "modal fade" id="file_upload" tabindex="-1" role="dialog" aria-labelledby="file_uploadTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content rounded-0">
+                    <div class="modal-body bg-4">
+                        <form action="{% url 'uploadcsv' %}" method="post" enctype="multipart/form-data" class="pt-3">
+                            {% csrf_token %}
+                            {{csvform}}
+                            <div class="pt-3"></div>
+                            <button type="submit">Confirm</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content"></div>
+            </div>
+        </div>
+
+<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+<script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+<script src="{% static 'js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'js/dataTables.searchPanes.min.js' %}"></script>
+<script>
+    $(document).ready(function() {
+
+    $("#create-banner").modalForm({
+        formURL: "{% url 'create_banner' %}"
+    });
+
+    pTable = $('#products').DataTable({
+        dom: 'lrtip'
+    });
+
+    $('#search').keyup(function(){
+      pTable.search($(this).val()).draw() ;
+})
+
+
+
+                  // Update book asynchronous button
+      // message
+      var asyncSuccessMessageUpdate = [
+        "<div ",
+        "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
+        "class='alert alert-icon alert-success alert-dismissible fade show mb-0' role='alert'>",
+        "Success: Product was updated.",
+        "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>",
+        "<span aria-hidden='true'>&times;</span>",
+        "</button>",
+        "</div>",
+        "<script>",
+        "$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});",
+        "<\/script>"
+      ].join("");
+
+      // modal form
+      function updateBookModalForm() {
+        $(".update-product").each(function () {
+          $(this).modalForm({
+            formURL: $(this).data("form-url"),
+            asyncUpdate: false,
+            asyncSettings: {
+              closeOnSubmit: true,
+              successMessage: asyncSuccessMessageUpdate,
+              dataUrl: $(this).data("data-url"),
+              dataElementId: "#products",
+              dataKey: "section",
+              addModalFormFunction: reinstantiateModalForms
+            }
+          });
+        });
+      }
+      updateBookModalForm();
+
+
+      function reinstantiateModalForms() {
+        updateBookModalForm();
+      }
+
+
+});
+</script>
+</body>
+</html>

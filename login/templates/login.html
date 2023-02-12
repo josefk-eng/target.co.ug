@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Target Login</title>
+    <link rel="stylesheet" href="{% static 'css/login.css'%}">
+</head>
+<body>
+<div class="page-wrapper bg-red font-robo bg-blue p-t-100 p-b-100">
+<div class="wrapper wrapper--w960">
+<div class="card card-2">
+<div class="card-heading"></div>
+<div class="card-body">
+<h2 class="title">Log In</h2>
+<form method="POST" action="{% url 'login'%}">
+    {% csrf_token %}
+    <div class="input-group">
+        <input class="input--style-2" type="text" placeholder="Name" name="name">
+    </div>
+    <div class="input-group">
+        <input class="input--style-2" type="password" placeholder="Password" name="password">
+    </div>
+
+<div class="p-t-30">
+ <button class="btn btn--radius btn--green" type="submit">Go</button>
+ {% if messages %}
+ {% for message in messages %}
+     <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+ {% endfor %}
+{% endif %}
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

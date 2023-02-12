@@ -1,0 +1,62 @@
+
+.shop-cart-widget form ul li {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    color: #282828;
+    font-weight: 600;
+    font-size: 14px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e4e5e6;
+    justify-content: space-between;
+}
+.shop-cart-widget form ul li:last-child {
+	margin-bottom: 0;
+}
+.shop-cart-widget .custom-control-label {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #565656;
+}
+.shop-cart-widget form ul li > span {
+    width: 45%;
+    flex: 0 0 45%;
+    color: #312620;
+    font-weight: 600;
+}
+.shop-cart-widget form ul li > span.amount {
+    margin-left: auto;
+    text-align: right;
+}
+.shop-cart-widget .custom-control {
+	margin-bottom: 10px;
+}
+.shop-cart-widget .custom-checkbox .custom-control-label::before {
+	border-radius: 0;
+	box-shadow: none;
+	top: 3px;
+	background-color: #fff;
+    border: 2px solid #bcbcbc;
+}
+.shop-cart-widget .custom-control-label::after {
+	top: 3px;
+}
+.shop-cart-widget .custom-control-input:checked~.custom-control-label::before {
+    color: #fff;
+    border-color: var(--color-primary);
+    background-color: var(--color-primary);
+}
+.shop-cart-widget .custom-control:last-child {
+	margin-bottom: 0;
+}
+.shop-cart-widget .custom-control-input:focus:not(:checked)~.custom-control-label::before {
+    border-color: #bcbcbc;
+}
+.shop-cart-total .shop-cart-widget .btn {
+    color: #fff;
+    box-shadow: none;
+    width: 100%;
+    border-radius: 50px;
+    padding: 18px 29px;
+}

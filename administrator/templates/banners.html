@@ -1,0 +1,68 @@
+{% extends 'index.html' %}
+{% block  content %}
+
+<section class="ftco-section">
+<div class="container">
+<div class="row">
+<div class="col-md-12">
+<div class="table-wrap">
+<table class="table" id="banners">
+<thead class="thead-primary">
+<tr>
+<th colspan="2">Banner</th>
+<th>Caption</th>
+<th>IsMain</th>
+<th>Actions</th>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</thead>
+<tbody>
+{% for p in banners %}
+<tr class="alert" role="alert">
+<td>
+<div class="img" style="background-image: url({{p.image.url}});"></div>
+</td>
+<td>
+<div class="email">
+<span>{{p.header}} </span>
+<!--<span>{{ p.description}}</span>-->
+</div>
+</td>
+<td>{{ p.price }}/=</td>
+<td class="quantity">
+<!--<div class="input-group">-->
+<!--<input type="text" name="quantity" class="quantity form-control input-number" value="{{p.quantity}}" min="1" max="100">-->
+<!--</div>-->
+    {{p.caption}}
+</td>
+<td>{{p.isMain}}</td>
+<td>
+<ul>
+    <li><a type="button" class="update-product" data-form-url="{% url 'update_product' p.pk %}" data-data-url="{{request.get_full_path}}"><i class="fas fa-edit"></i></a></li>
+    <li><a href=""><i class="fas fa-eye-slash"></i></a></li>
+</ul>
+</td>
+</tr>
+{% endfor %}
+<tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td><button type="button" id="create_banner" >Add Banner</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+{% endblock %}
