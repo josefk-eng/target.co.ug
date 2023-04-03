@@ -1,5 +1,5 @@
 from rest_framework import serializers, fields
-from administrator.models import Product, Category, Banner, Season
+from administrator.models import Product, Category, Banner, Season, Order
 from .models import UserToken
 from django.utils.timezone import now
 
@@ -28,6 +28,12 @@ class BannerSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = '__all__'
+
+
 class TokenSerializer(serializers.ModelSerializer):
     # token = serializers.CharField(max_length=1000)
     # deviceId = serializers.CharField(max_length=500)
@@ -41,3 +47,4 @@ class TokenSerializer(serializers.ModelSerializer):
     #     return UserToken.objects.create(**validated_data)
     def get_dateAdded(self, obj):
         return now()
+

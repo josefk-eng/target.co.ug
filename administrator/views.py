@@ -24,6 +24,15 @@ def products_view(request):
         return redirect('login')
 
 
+def orders_view(request):
+    if request.user.is_authenticated:
+        orders = models.Order.objects.all()
+        return render(request, 'orders.html',
+                      {'products': orders,})
+    else:
+        return redirect('login')
+
+
 def dept_view(request):
     if request.user.is_authenticated:
         depts = models.Category.objects.all()
@@ -107,3 +116,11 @@ class BannerCreateView(BSModalCreateView):
     form_class = BannerForm()
     success_message = 'Success: Banner was created.'
     success_url = reverse_lazy('index')
+
+
+def receipt_preview(request):
+    if request.user.is_authenticated:
+        order = models.Order.objects.get(pk=3)
+        return render(request, 'result.html', {'order': order})
+    else:
+        return redirect('login')

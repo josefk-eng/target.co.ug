@@ -16,7 +16,6 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -26,8 +25,7 @@ SECRET_KEY = 'django-insecure-mjslk8$6!av2t$s_6t3rs**w(ydz^&4mmjcs7vxu$24)j0)agn
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['172.20.10.7']
-
+ALLOWED_HOSTS = ['172.20.10.7', '127.0.0.1', '0.0.0.0', '10.0.2.2', '13.41.199.251', '3.8.90.63', '192.168.89.11']
 
 # Application definition
 
@@ -42,6 +40,7 @@ INSTALLED_APPS = [
     'administrator',
     'login',
     'api',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -72,19 +71,30 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'target.wsgi.application'
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'api.PagingStyle.CustomPagination',
+    'PAGE_SIZE': 10
+}
 
+WSGI_APPLICATION = 'target.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'supermarket',
+    #     'USER': 'root',
+    #     'HOST': 'localhost',
+    #     'PORT': '3306',
+    #     'PASSWORD': ''
+    # }
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -104,7 +114,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -118,7 +127,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
@@ -130,7 +138,6 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
 # Base url to serve media files
 MEDIA_URL = '/media/'

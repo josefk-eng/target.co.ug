@@ -23,6 +23,7 @@
 <nav id="colorlib-main-menu" role="navigation">
 <ul>
 <li class="{% if request.resolver_match.url_name == "index" %}colorlib-active{% endif %}"><a href="{% url 'index' %}">Home</a></li>
+<li class="{% if request.resolver_match.url_name == "orders" %}colorlib-active{% endif %}"><a href="{% url 'orders' %}">Orders</a></li>
 <li class="{% if request.resolver_match.url_name == "product" %}colorlib-active{% endif %}" ><a href="{% url 'product'%}">Products</a></li>
 <li class="{% if request.resolver_match.url_name == "depts" %}colorlib-active{% endif %}"><a href="{% url 'depts'%}">Department</a></li>
 <li class="{% if request.resolver_match.url_name == "banners_view" %}colorlib-active{% endif %}"><a href="{% url 'banners_view'%}">Promo Banners</a></li>

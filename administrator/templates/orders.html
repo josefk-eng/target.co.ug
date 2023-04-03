@@ -1,0 +1,54 @@
+{% extends 'index.html' %}
+{% block  content %}
+<section class="ftco-section">
+<div class="container">
+<div class="row">
+<div class="col-md-12">
+<div class="table-wrap">
+<table class="table" id="products">
+<thead class="thead-primary">
+<tr>
+<th colspan="4">Order Info</th>
+<th colspan="4">Customer Info</th>
+</tr>
+<tr>
+<td>Order No.</td>
+<td>Amount</td>
+<td>items</td>
+<td>status</td>
+<td>Date</td>
+<td>Name</td>
+<td>Number</td>
+<td>Address</td>
+<td>Actions</td>
+</tr>
+</thead>
+<tbody>
+{% for p in products %}
+<tr class="alert" role="alert">
+    <td>{{ p.id }}</td>
+<td>{{ p.price}}/=</td>
+<td>
+    {% for prod %}
+</td>
+<td>{{ p.status }}</td>
+<td>{{p.date_added}}</td>
+<td>{{p.contactName}}</td>
+<td>{{p.contact}}</td>
+<td>{{p.address}}</td>
+<td>
+<ul>
+    <li><a type="button" class="update-product" data-form-url="{% url 'update_product' p.pk %}" data-data-url="{{request.get_full_path}}"><i class="fas fa-edit"></i></a></li>
+    <li><a href=""><i class="fas fa-eye-slash"></i></a></li>
+</ul>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</section>
+{% endblock %}

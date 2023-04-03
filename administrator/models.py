@@ -1,7 +1,14 @@
+import io
+from os import remove
+
+import PIL
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.contrib.auth.models import User
+from api import FCMManager
+from api.models import UserToken
+import uuid
 
 
 # Create your models here.
@@ -39,15 +46,15 @@ class Category(models.Model):
     def get_absolute_url(self):
         return reverse("Category_detail", kwargs={"pk": self.pk})
 
-    # def save(self, *args, **kwargs):
-    #     super().save(*args, **kwargs)
-    #     img = PIL.Image.open(self.image)
-    #     arr = io.BytesIO()
-    #     img.save(arr, format='PNG')
-    #     out = remove(arr.getvalue())
-    #     with io.BytesIO(out) as f:
-    #         img.save(f, format='PNG')
-    #     FCMManager.sendpush("Category", "{}".format(self.pk))
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # img = PIL.Image.open(self.image)
+        # arr = io.BytesIO()
+        # img.save(arr, format='PNG')
+        # out = remove(arr.getvalue())
+        # with io.BytesIO(out) as f:
+        #     img.save(f, format='PNG')
+        FCMManager.sendpush("Category", "{}".format(self.pk))
 
 
 # class Item(models.Model):
@@ -110,7 +117,7 @@ class Product(models.Model):
     price = models.IntegerField(default=0.0)
     department = models.CharField(max_length=200)  # define department
     image = models.ImageField(upload_to="products/", default='default.png')
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, default=0)
     availability = models.BooleanField(default=False)
     unit = models.CharField(default="kg", max_length=20)
     description = models.CharField(max_length=100, blank=True, null=True)
@@ -141,3 +148,46 @@ class Employee(models.Model):
 
     def get_absolute_url(self):
         return reverse("Employee_detail", kwargs={"pk": self.pk})
+
+
+ORDER_STATUS = (
+    ("Placed", "Placed"),
+    ("Processed", "Processed"),
+    ("Delivered", "Delivered"),
+    ("Completed", "Completed"),
+)
+
+
+class Order(models.Model):
+    identification = models.ForeignKey(UserToken, on_delete=models.CASCADE)
+    price = models.IntegerField(default=0.0)
+    date_added = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=ORDER_STATUS, default="Placed")
+    items = models.CharField(max_length=1000, default="")
+    address = models.CharField(max_length=1000, default="")
+    contact = models.CharField(max_length=1000, default="")
+    contactName = models.CharField(max_length=1000, default="")
+    orderId = models.IntegerField(default=0)
+    remoteOrderId = models.IntegerField(default=0)
+
+    class Meta:
+        verbose_name = _("Order")
+        verbose_name_plural = _("Order")
+
+    def __str__(self):
+        return str(self.pk)
+
+    def get_absolute_url(self):
+        return reverse("Order", kwargs={"pk": self.pk})
+
+    def save(self, *args, **kwargs):
+        super(Order, self).save(*args, **kwargs)
+
+
+class OrderProduct(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+
+    class Meta:
+        unique_together = ('order', 'product')
