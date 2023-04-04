@@ -1,128 +1,129 @@
+import io
+import operator
 from functools import reduce
 
 from django.db.models import Q
-from django.shortcuts import render
+from django.http import FileResponse
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.views.generic import View
+from reportlab.pdfgen import canvas
+from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from administrator.models import Product, Category, Season, Banner, Order
-from .Serializers import ItemSerializer, CategorySerializer, SeasonSerializer, BannerSerializer, OrderSerializer
+from rest_framework.exceptions import APIException
+from rest_framework import status
+
+from administrator import models
 from api.Serializers import TokenSerializer
+from . import Serializers
 from .models import UserToken
-from django.shortcuts import get_object_or_404
-import operator
-from . import PagingStyle
-import io
-from django.http import FileResponse
-from reportlab.pdfgen import canvas
-from django.http import HttpResponse
-from django.views.generic import View
 from .process import html_to_pdf
-from django.template.loader import render_to_string
+from .utils import custom_exception_handler
 
 
 # Create your views here.
 @api_view(['GET'])
 def productsByCatID(request, catID):
-    myCat = Category.objects.get(id=catID)
-    items = Product.objects.filter(category=myCat)
-    serializer = ItemSerializer(items, many=True)
+    myCat = models.Category.objects.get(id=catID)
+    items = models.Product.objects.filter(category=myCat)
+    serializer = Serializers.ItemSerializer(items, many=True)
     return Response(serializer.data)
 
 
 @api_view(['GET'])
 def productsByID(request, id):
-    item = get_object_or_404(Product, id=id)
-    serializer = ItemSerializer(item)
+    item = get_object_or_404(models.Product, id=id)
+    serializer = Serializers.ItemSerializer(item)
     return Response(serializer.data)
 
 
 @api_view(['GET'])
 def allProducts(request, page):
-    item = Product.objects.filter()[:10]
-    serializer = ItemSerializer(item, many=True)
+    item = models.Product.objects.filter()[:10]
+    serializer = Serializers.ItemSerializer(item, many=True)
     return Response(serializer.data)
 
 
 class ProductsRecordsView(ListAPIView):
     # pagination_class = PagingStyle.CustomPagination
-    queryset = Product.objects.all().order_by('category')
-    serializer_class = ItemSerializer
+    queryset = models.Product.objects.all().order_by('category')
+    serializer_class = Serializers.ItemSerializer
 
 
 @api_view(['GET'])
 def allCategories(request):
-    cats = Category.objects.all()
-    serializer = CategorySerializer(cats, many=True)
+    cats = models.Category.objects.all()
+    serializer = Serializers.CategorySerializer(cats, many=True)
     return Response(serializer.data)
 
 
 @api_view(['GET'])
 def categoryById(request, id):
-    cate = get_object_or_404(Category, id=id)
-    serializer = CategorySerializer(cate)
+    cate = get_object_or_404(models.Category, id=id)
+    serializer = Serializers.CategorySerializer(cate)
     return Response(serializer.data)
 
 
 @api_view(['GET'])
 def allSeasons(request):
-    seas = Season.objects.all()
-    serializer = SeasonSerializer(seas, many=True)
+    seas = models.Season.objects.all()
+    serializer = Serializers.SeasonSerializer(seas, many=True)
     return Response(serializer.data)
 
 
 @api_view(['GET'])
 def seasonById(request, id):
-    season = Season.objects.get(id=id)
-    serializer = SeasonSerializer(season)
+    season = models.Season.objects.get(id=id)
+    serializer = Serializers.SeasonSerializer(season)
     return Response(serializer.data)
 
 
 @api_view(['GET'])
 def bannersByID(request, SeasonID):
-    banners = Banner.objects.filter(season=SeasonID)
-    serializer = BannerSerializer(banners, many=True)
+    banners = models.Banner.objects.filter(season=SeasonID)
+    serializer = Serializers.BannerSerializer(banners, many=True)
     return Response(serializer.data)
 
 
 @api_view(['GET'])
 def allBanners(request):
-    banners = Banner.objects.all()
-    serializer = BannerSerializer(banners, many=True)
+    banners = models.Banner.objects.all()
+    serializer = Serializers.BannerSerializer(banners, many=True)
     return Response(serializer.data)
 
 
 @api_view(['GET'])
 def bannerById(request, id):
-    banner = Banner.objects.get(id=id)
-    serializer = BannerSerializer(banner)
+    banner = models.Banner.objects.get(id=id)
+    serializer = Serializers.BannerSerializer(banner)
     return Response(serializer.data)
 
 
 @api_view(['GET'])
 def deals(request):
-    deals = Product.objects.filter(tag__icontains="deal")
-    serializer = ItemSerializer(deals, many=True)
+    deals = models.Product.objects.filter(tag__icontains="deal")
+    serializer = Serializers.ItemSerializer(deals, many=True)
     return Response(serializer.data)
 
 
 @api_view(['GET'])
 def offers(request):
-    offers = Product.objects.filter(tag__icontains="offer")
-    serializer = ItemSerializer(offers, many=True)
+    offers = models.Product.objects.filter(tag__icontains="offer")
+    serializer = Serializers.ItemSerializer(offers, many=True)
     return Response(serializer.data)
 
 
 @api_view(['GET'])
 def special(request):
-    special = Product.objects.filter(tag__icontains="special")
-    serializer = ItemSerializer(special, many=True)
+    special = models.Product.objects.filter(tag__icontains="special")
+    serializer = Serializers.ItemSerializer(special, many=True)
     return Response(serializer.data)
 
 
 @api_view(['POST'])
 def order(request):
-    serializer = OrderSerializer(data=request.data)
+    serializer = Serializers.OrderSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
         serializer.save()
         return Response(serializer.data)
@@ -134,8 +135,8 @@ def order(request):
 def recommended(request):
     strings = ['deal', 'offer', 'special']
     condition = reduce(operator.and_, [Q(tag__icontains=s) for s in strings])
-    recommend = Product.objects.filter(condition)  # [:10]
-    serializer = ItemSerializer(recommend, many=True)
+    recommend = models.Product.objects.filter(condition)  # [:10]
+    serializer = Serializers.ItemSerializer(recommend, many=True)
     return Response(serializer.data)
 
 
@@ -167,10 +168,10 @@ class SearchResult:
 
 @api_view(['GET'])
 def search(request, query):
-    category = Category.objects.filter(name__icontains=query)
-    products = Product.objects.filter(name__icontains=query)
-    cat_serializer = CategorySerializer(category, many=True)
-    prod_serializer = ItemSerializer(products, many=True)
+    category = models.Category.objects.filter(name__icontains=query)
+    products = models.Product.objects.filter(name__icontains=query)
+    cat_serializer = Serializers.CategorySerializer(category, many=True)
+    prod_serializer = Serializers.ItemSerializer(products, many=True)
     return Response({
         "depts": cat_serializer.data,
         "products": prod_serializer.data
@@ -201,7 +202,7 @@ def some_view(request):
 # Creating a class based view
 class GeneratePdf(View):
     def get(self, request, *args, **kwargs):
-        data = Order.objects.get(pk=3)
+        data = models.Order.objects.get(pk=3)
         # getting the template
         pdf = html_to_pdf('result.html', {'order': data})
 
@@ -211,7 +212,7 @@ class GeneratePdf(View):
 
 @api_view(['POST'])
 def add_order(request):
-    serializer = OrderSerializer(data=request.body)
+    serializer = Serializers.OrderSerializer(data=request.body)
     if serializer.is_valid(raise_exception=True):
         serializer.save()
         return Response(serializer.data)
@@ -223,3 +224,31 @@ def add_order(request):
 @api_view(['GET'])
 def check(request):
     return Response(0)
+
+
+@api_view(['POST'])
+def addressing(request):
+    query = request.data["type"]
+    quota = request.data["quota"]
+    if query == "district":
+        districts = models.District.objects.all()
+        serializer = Serializers.DistrictSerializer(districts,many=True)
+        return Response(serializer.data)
+    elif query == "division":
+        division = models.Division.objects.filter(district=quota)
+        serializer = Serializers.DivisionSerializer(division, many=True)
+        return Response(serializer.data)
+    elif query == "parish":
+        parish = models.Parish.objects.filter(division=quota)
+        serializer = Serializers.ParishSerializer(parish, many=True)
+        return Response(serializer.data)
+    elif query == "village":
+        village = models.Village.objects.filter(parish=quota)
+        serializer = Serializers.VillageSerializer(village,many=True)
+        return Response(serializer.data)
+    elif query == "street":
+        street = models.Street.objects.filter(village=quota)
+        serializer = Serializers.StreetSerializer(street,many=True)
+        return Response(serializer.data)
+    else:
+        return custom_exception_handler(APIException(detail="Unknown AddressType", code=status.HTTP_400_BAD_REQUEST), context={"request": request})

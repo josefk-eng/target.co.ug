@@ -23,4 +23,5 @@ urlpatterns = [
     path('pdf/', views.GeneratePdf.as_view()),
     path('order', views.add_order, name="order"),
     path('check', views.check, name="order"),
+    path('addressing', views.addressing, name='addressing'),
 ]

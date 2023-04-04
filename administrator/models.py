@@ -191,3 +191,82 @@ class OrderProduct(models.Model):
 
     class Meta:
         unique_together = ('order', 'product')
+
+
+class District(models.Model):
+    name = models.CharField(max_length=50)
+    isActive = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = _("District")
+        verbose_name_plural = _("District")
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("District_detail", kwargs={"pk": self.pk})
+
+
+class Division(models.Model):
+    name = models.CharField(max_length=50)
+    district = models.ForeignKey(District, on_delete=models.CASCADE)
+    isActive = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = _("Division")
+        verbose_name_plural = _("Division")
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("Division_detail", kwargs={"pk": self.pk})
+
+
+class Parish(models.Model):
+    name = models.CharField(max_length=50)
+    division = models.ForeignKey(Division, on_delete=models.CASCADE)
+    isActive = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = _("parish")
+        verbose_name_plural = _("parish")
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("parish_detail", kwargs={"pk": self.pk})
+
+
+class Village(models.Model):
+    name = models.CharField(max_length=50)
+    parish = models.ForeignKey(Parish, on_delete=models.CASCADE)
+    isActive = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = _("village")
+        verbose_name_plural = _("village")
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("village_detail", kwargs={"pk": self.pk})
+
+
+class Street(models.Model):
+    name = models.CharField(max_length=50)
+    village = models.ForeignKey(Village, on_delete=models.CASCADE)
+    isActive = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = _("street")
+        verbose_name_plural = _("street")
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("street_detail", kwargs={"pk": self.pk})

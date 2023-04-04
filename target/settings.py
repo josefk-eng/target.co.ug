@@ -73,7 +73,8 @@ TEMPLATES = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'api.PagingStyle.CustomPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 10,
+    'EXCEPTION_HANDLER': 'api.utils.custom_exception_handler'
 }
 
 WSGI_APPLICATION = 'target.wsgi.application'

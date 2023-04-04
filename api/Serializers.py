@@ -1,36 +1,36 @@
 from rest_framework import serializers, fields
-from administrator.models import Product, Category, Banner, Season, Order
+from administrator import models
 from .models import UserToken
 from django.utils.timezone import now
 
 
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Product
+        model = models.Product
         fields = '__all__'
 
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Category
+        model = models.Category
         fields = '__all__'
 
 
 class SeasonSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Season
+        model = models.Season
         fields = '__all__'
 
 
 class BannerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Banner
+        model = models.Banner
         fields = '__all__'
 
 
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Order
+        model = models.Order
         fields = '__all__'
 
 
@@ -48,3 +48,32 @@ class TokenSerializer(serializers.ModelSerializer):
     def get_dateAdded(self, obj):
         return now()
 
+
+class DistrictSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.District
+        fields = '__all__'
+
+
+class DivisionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Division
+        fields = '__all__'
+
+
+class ParishSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Parish
+        fields = '__all__'
+
+
+class VillageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Village
+        fields = '__all__'
+
+
+class StreetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Street
+        fields = '__all__'
